@@ -1,0 +1,43 @@
+# Build artifacts
+build/
+*.elf
+*.hex
+*.bin
+*.map
+*.o
+*.d
+*.su
+*.lst
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Debugger
+*.launch
+.gdb_history
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Documentation build
+docs/html/
+docs/latex/
