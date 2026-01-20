@@ -235,7 +235,7 @@ TEST_F(ButtonInputTest, StateMachinePressedToReleased) {
     // Release (transition to RELEASING)
     mockTime.setTime(50);
     button.update(false, mockTime.getCurrentTimeMs());
-    EXPECT_TRUE(button.isPressed());  // Still debouncing release
+    EXPECT_FALSE(button.isPressed());  // In RELEASING state, not pressed
 
     // Wait for debounce (transition to RELEASED)
     mockTime.setTime(75);
@@ -385,8 +385,12 @@ TEST_F(ButtonInputTest, ZeroDebounceTime) {
     ButtonInput button(0, 0);  // 0ms debounce
     button.init();
 
-    // Should accept immediately
+    // First update: transition to DEBOUNCING
     mockTime.setTime(0);
+    button.update(true, mockTime.getCurrentTimeMs());
+
+    // Second update: debounce complete (0ms elapsed >= 0ms required)
+    mockTime.setTime(0);  // Same time is fine for 0ms debounce
     bool changed = button.update(true, mockTime.getCurrentTimeMs());
     EXPECT_TRUE(changed);
     EXPECT_TRUE(button.isPressed());

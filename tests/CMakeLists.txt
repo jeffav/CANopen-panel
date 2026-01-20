@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 3.22)
 
 # Project for tests (host build, not cross-compilation)
+# Note: This CMakeLists.txt is separate from the main firmware build
+# and will use your system's native compiler (not ARM cross-compiler)
 project(CANopen-Panel-Tests LANGUAGES CXX C)
 
-# Use host compiler, not ARM cross-compiler
-set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_COMPILER g++)
+# C/C++ Standards
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Enable testing
 enable_testing()
@@ -27,6 +29,7 @@ include(FetchContent)
 FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/release-1.12.1.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

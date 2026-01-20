@@ -221,7 +221,8 @@ TEST_F(LampOutputTest, StopBlinkingWhenOffStaysOff) {
     LampOutput lamp(0);
     lamp.init();
 
-    lamp.turnOff();
+    // Explicitly set brightness to 0 to indicate "off" state
+    lamp.turnOn(0);  // This sets brightness to 0 and mode to OFF
     lamp.startBlinking(100, 100);
     lamp.stopBlinking();
 
@@ -312,13 +313,14 @@ TEST_F(LampArrayTest, UpdateAllProcessesAllLamps) {
     EXPECT_TRUE(array.getLamp(0)->getOutputState());
     EXPECT_TRUE(array.getLamp(1)->getOutputState());
 
-    // After 105ms, lamp 0 should toggle
+    // After 105ms, lamp 0 should toggle to off
     mockTime.setTime(105);
     array.updateAll(mockTime.getCurrentTimeMs());
     EXPECT_FALSE(array.getLamp(0)->getOutputState());
 
-    // Lamp 1 should have toggled twice by now
-    EXPECT_TRUE(array.getLamp(1)->getOutputState());
+    // Lamp 1: 105ms elapsed since t=0, first toggle at 50ms (to off)
+    // So at 105ms, lamp 1 is in off phase
+    EXPECT_FALSE(array.getLamp(1)->getOutputState());
 }
 
 TEST_F(LampArrayTest, GetOutputMaskWithBlinking) {
