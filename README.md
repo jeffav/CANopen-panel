@@ -143,6 +143,53 @@ cmake --build .
 4. Use CMake: Configure and CMake: Build commands
 5. Configure `launch.json` for OpenOCD debugging
 
+## Testing
+
+### Running Tests
+
+The project includes comprehensive unit tests that run on your development machine (no hardware required):
+
+```bash
+cd tests
+mkdir build && cd build
+cmake ..
+make
+ctest --verbose
+```
+
+**Test Coverage:**
+- ✅ ButtonInput debouncing and edge detection
+- ✅ LampOutput modes and blinking
+- ✅ Object Dictionary operations
+- ✅ State machine behavior
+
+See [`tests/README.md`](tests/README.md) for detailed testing documentation.
+
+### Continuous Integration
+
+Tests run automatically on every push via GitHub Actions:
+- Unit tests with code coverage
+- Firmware build verification
+- Code quality checks
+- Static analysis
+
+### Test Example
+
+```cpp
+TEST(ButtonInputTest, DebounceRejectsShortPulse) {
+    ButtonInput button(0, 20);  // 20ms debounce
+    button.init();
+
+    // Simulate 5ms press (too short)
+    button.update(true, 0);
+    button.update(false, 5);
+
+    EXPECT_FALSE(button.isPressed());  // Rejected!
+}
+```
+
+[![CI Status](https://github.com/yourusername/CANopen-panel/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/yourusername/CANopen-panel/actions)
+
 ## Hardware Configuration
 
 ### Pin Assignments (Example for STM32F407)
