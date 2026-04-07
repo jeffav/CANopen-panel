@@ -198,15 +198,61 @@ void OperatorPanel::emergencyStop()
 
 bool OperatorPanel::runDiagnostics()
 {
-    if (!initialized_) {
+    if (!initialized_ || !buttons_ || !lamps_) {
         return false;
     }
 
-    /* TODO: Implement comprehensive diagnostics */
-    /* - Test button reads */
-    /* - Test GPIO reads */
-    /* - Test lamp outputs */
-    /* - Verify OD integrity */
+    /* 1. Verify button and lamp arrays match configuration */
+    if (buttons_->getNumButtons() != config_.numButtons) {
+        return false;
+    }
+    if (lamps_->getNumLamps() != config_.numLamps) {
+        return false;
+    }
+
+    /* 2. Verify every button and lamp object is reachable */
+    for (uint8_t i = 0; i < config_.numButtons; i++) {
+        if (buttons_->getButton(i) == nullptr) {
+            return false;
+        }
+    }
+    for (uint8_t i = 0; i < config_.numLamps; i++) {
+        if (lamps_->getLamp(i) == nullptr) {
+            return false;
+        }
+    }
+
+    /* 3. Exercise each lamp through the OD -> processLampOutputs path and
+     *    confirm the resulting output state matches what we wrote.
+     *    Save and restore the OD lamp mask so diagnostics are side-effect-free. */
+    const uint8_t savedLampMask = OD_ReadLampOutputs();
+
+    for (uint8_t i = 0; i < config_.numLamps; i++) {
+        OD_SetLamp(i, true);
+        processLampOutputs(0);
+        LampOutput* lamp = lamps_->getLamp(i);
+        if (!lamp || !lamp->getOutputState()) {
+            OD_SetLamp(i, (savedLampMask & (1U << i)) != 0);
+            processLampOutputs(0);
+            return false;
+        }
+        OD_SetLamp(i, false);
+        processLampOutputs(0);
+        if (lamp->getOutputState()) {
+            return false;
+        }
+    }
+
+    /* Restore prior lamp state */
+    for (uint8_t i = 0; i < config_.numLamps; i++) {
+        OD_SetLamp(i, (savedLampMask & (1U << i)) != 0);
+    }
+    processLampOutputs(0);
+
+    /* 4. OD integrity: device type must match CiA 401 constant */
+    if (OD_RAM.deviceType != OD_DEV_TYPE) {
+        return false;
+    }
 
     return true;
 }

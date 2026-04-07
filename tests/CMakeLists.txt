@@ -70,16 +70,27 @@ add_executable(test_od
 )
 target_link_libraries(test_od gtest_main)
 
+add_executable(test_operator_panel
+    unit/test_operator_panel.cpp
+    ${CMAKE_SOURCE_DIR}/../src/application/OperatorPanel.cpp
+    ${CMAKE_SOURCE_DIR}/../src/application/ButtonInput.cpp
+    ${CMAKE_SOURCE_DIR}/../src/application/LampOutput.cpp
+    ${CMAKE_SOURCE_DIR}/../src/application/Tasks.cpp
+    ${CMAKE_SOURCE_DIR}/../src/canopen/OD.c
+)
+target_link_libraries(test_operator_panel gtest_main)
+
 # Register tests with CTest
 include(GoogleTest)
 gtest_discover_tests(test_button_input)
 gtest_discover_tests(test_lamp_output)
 gtest_discover_tests(test_od)
+gtest_discover_tests(test_operator_panel)
 
 # Custom target to run all tests
 add_custom_target(run_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_button_input test_lamp_output test_od
+    DEPENDS test_button_input test_lamp_output test_od test_operator_panel
     COMMENT "Running all unit tests"
 )
 
