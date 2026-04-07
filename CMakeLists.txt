@@ -54,8 +54,11 @@ add_compile_options(
     -fdata-sections
     -ffunction-sections
     -fstack-usage
-    $<$<CONFIG:Debug>:-Og -g3 -ggdb>
-    $<$<CONFIG:Release>:-O3 -g0>
+    $<$<CONFIG:Debug>:-Og>
+    $<$<CONFIG:Debug>:-g3>
+    $<$<CONFIG:Debug>:-ggdb>
+    $<$<CONFIG:Release>:-O3>
+    $<$<CONFIG:Release>:-g0>
 )
 
 # Common definitions

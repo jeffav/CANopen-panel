@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmake --build build)",
+      "Bash(git -C /Users/jeff/dev/CANopen-panel mv src/application/Tasks.c src/application/Tasks.cpp)",
+      "Bash(cmake -B build)"
+    ]
+  }
+}

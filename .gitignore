@@ -20,6 +20,7 @@ _deps/
 # IDE
 .vscode/
 .idea/
+.cache/
 *.swp
 *.swo
 *~

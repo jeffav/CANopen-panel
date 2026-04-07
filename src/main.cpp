@@ -216,7 +216,7 @@ extern "C" void HAL_CAN_RxFifo0MsgPendingCallback(void* hcan)
 extern "C" void Error_Handler(void)
 {
     /* Disable interrupts */
-    __disable_irq();
+    /* TODO: __disable_irq();  (requires CMSIS) */
 
     /* Emergency stop - turn off all outputs */
     if (g_operatorPanel) {
